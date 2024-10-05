@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ProjectController;
 use App\Http\Controllers\API\TaskController;
 use Illuminate\Support\Facades\Route;
+
+Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('projects', [ProjectController::class, 'index'])->middleware('permission:list projects');
