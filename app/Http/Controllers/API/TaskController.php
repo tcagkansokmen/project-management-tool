@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\TaskUpdated;
 use App\Http\Controllers\Controller;
 use App\Repositories\TaskRepositoryInterface;
 use App\Http\Requests\StoreTaskRequest;
@@ -61,6 +62,9 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request): JsonResponse
     {
         $task = $this->taskRepository->create($request->validated());
+
+        broadcast(new TaskUpdated('created'));
+
         return response()->json(new TaskResource($task), 201);
     }
 
@@ -74,6 +78,9 @@ class TaskController extends Controller
     public function update(UpdateTaskRequest $request, int $id): JsonResponse
     {
         $task = $this->taskRepository->update($id, $request->validated());
+
+        broadcast(new TaskUpdated('updated'));
+
         return response()->json(new TaskResource($task));
     }
 
@@ -86,6 +93,9 @@ class TaskController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $this->taskRepository->delete($id);
+
+        broadcast(new TaskUpdated('deleted'));
+
         return response()->json(null, 204);
     }
 }

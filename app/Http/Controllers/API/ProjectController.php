@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\ProjectUpdated;
 use App\Http\Controllers\Controller;
 use App\Repositories\ProjectRepositoryInterface;
 use App\Http\Requests\StoreProjectRequest;
@@ -54,6 +55,7 @@ class ProjectController extends Controller
     public function show(int $id): JsonResponse
     {
         $project = $this->projectRepository->getById($id);
+
         return response()->json(new ProjectResource($project));
     }
 
@@ -66,6 +68,9 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request): JsonResponse
     {
         $project = $this->projectRepository->create($request->validated());
+
+        broadcast(new ProjectUpdated('created'));
+
         return response()->json(new ProjectResource($project), 201);
     }
 
@@ -79,6 +84,9 @@ class ProjectController extends Controller
     public function update(UpdateProjectRequest $request, int $id): JsonResponse
     {
         $project = $this->projectRepository->update($id, $request->validated());
+
+        broadcast(new ProjectUpdated('updated'));
+
         return response()->json(new ProjectResource($project));
     }
 
@@ -91,6 +99,9 @@ class ProjectController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $this->projectRepository->delete($id);
+
+        broadcast(new ProjectUpdated('deleted'));
+
         return response()->json(null, 204);
     }
 }

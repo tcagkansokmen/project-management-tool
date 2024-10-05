@@ -1,11 +1,13 @@
 <?php
 namespace Tests\Feature;
 
+use App\Events\ProjectUpdated;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -27,6 +29,8 @@ class ProjectApiTest extends TestCase
     /** @test */
     public function it_can_create_a_project()
     {
+        Event::fake();
+
         $data = [
             'name' => 'Test Project',
             'description' => 'Test Project Description',
@@ -37,6 +41,10 @@ class ProjectApiTest extends TestCase
         $response->assertCreated()
             ->assertJsonFragment(['name' => 'Test Project']);
         $this->assertDatabaseHas('projects', $data);
+
+        Event::assertDispatched(ProjectUpdated::class, function ($event) {
+            return $event->action === 'created';
+        });
     }
 
     /** @test */
@@ -64,6 +72,8 @@ class ProjectApiTest extends TestCase
     /** @test */
     public function it_can_update_a_project()
     {
+        Event::fake();
+
         $project = Project::factory()->create();
 
         $data = [
@@ -76,11 +86,17 @@ class ProjectApiTest extends TestCase
         $response->assertOk()
             ->assertJsonFragment(['name' => 'Updated Project']);
         $this->assertDatabaseHas('projects', $data);
+
+        Event::assertDispatched(ProjectUpdated::class, function ($event) {
+            return $event->action === 'updated';
+        });
     }
 
     /** @test */
     public function it_can_delete_a_project()
     {
+        Event::fake();
+
         $project = Project::factory()->create();
 
         $response = $this->deleteJson("/api/v1/projects/{$project->id}");
@@ -88,6 +104,10 @@ class ProjectApiTest extends TestCase
         $response->assertNoContent();
 
         $this->assertDatabaseMissing('projects', ['id' => $project->id]);
+
+        Event::assertDispatched(ProjectUpdated::class, function ($event) {
+            return $event->action === 'deleted';
+        });
     }
 
     /** @test */

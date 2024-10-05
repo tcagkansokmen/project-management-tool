@@ -3,11 +3,13 @@
 namespace Tests\Feature;
 
 use App\Enums\TaskStatus;
+use App\Events\TaskUpdated;
 use App\Models\Task;
 use App\Models\Project;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -29,6 +31,8 @@ class TaskApiTest extends TestCase
     /** @test */
     public function it_can_create_a_task()
     {
+        Event::fake();
+
         $project = Project::factory()->create();
         $data = [
             'project_id' => $project->id,
@@ -42,6 +46,10 @@ class TaskApiTest extends TestCase
         $response->assertCreated()
             ->assertJsonFragment(['name' => 'Test Task']);
         $this->assertDatabaseHas('tasks', $data);
+
+        Event::assertDispatched(TaskUpdated::class, function ($event) {
+            return $event->action === 'created';
+        });
     }
 
     /** @test */
@@ -69,6 +77,8 @@ class TaskApiTest extends TestCase
     /** @test */
     public function it_can_update_a_task()
     {
+        Event::fake();
+
         $task = Task::factory()->create();
 
         $data = [
@@ -82,11 +92,17 @@ class TaskApiTest extends TestCase
         $response->assertOk()
             ->assertJsonFragment(['name' => 'Updated Task']);
         $this->assertDatabaseHas('tasks', $data);
+
+        Event::assertDispatched(TaskUpdated::class, function ($event) {
+            return $event->action === 'updated';
+        });
     }
 
     /** @test */
     public function it_can_delete_a_task()
     {
+        Event::fake();
+
         $task = Task::factory()->create();
 
         $response = $this->deleteJson("/api/v1/tasks/{$task->id}");
@@ -94,6 +110,10 @@ class TaskApiTest extends TestCase
         $response->assertNoContent();
 
         $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
+
+        Event::assertDispatched(TaskUpdated::class, function ($event) {
+            return $event->action === 'deleted';
+        });
     }
     /** @test */
     public function it_can_filter_tasks_by_status()
