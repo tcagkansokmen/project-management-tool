@@ -39,4 +39,14 @@ class ProjectUpdated implements ShouldBroadcast
             'action' => $this->action,
         ];
     }
+
+    /**
+     * The event's broadcast name.
+     *
+     * @return string
+     */
+    public function broadcastAs(): string
+    {
+        return 'project-updated';
+    }
 }

@@ -39,6 +39,9 @@ class TaskRepository implements TaskRepositoryInterface
      */
     public function create(array $data): Task
     {
+        if(!isset($data['status'])) {
+            $data['status'] = TaskStatus::TODO->value;
+        }
         return Task::create($data);
     }
 

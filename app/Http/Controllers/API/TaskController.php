@@ -9,6 +9,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskResource;
 use Illuminate\Http\JsonResponse;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class TaskController extends Controller
@@ -34,8 +35,8 @@ class TaskController extends Controller
     {
         $tasks = QueryBuilder::for($this->taskRepository->getModel())
             ->allowedIncludes(['project'])
-            ->allowedFilters(['name', 'status'])
-            ->allowedSorts(['name', 'created_at'])
+            ->allowedFilters([AllowedFilter::exact('project_id'), 'name', 'description', 'status'])
+            ->allowedSorts(['name', 'description', 'status', 'created_at'])
             ->paginate(10);
 
         return TaskResource::collection($tasks)->response();
@@ -63,7 +64,7 @@ class TaskController extends Controller
     {
         $task = $this->taskRepository->create($request->validated());
 
-        broadcast(new TaskUpdated('created'));
+        event(new TaskUpdated($task->project, 'created'));
 
         return response()->json(new TaskResource($task), 201);
     }
@@ -79,7 +80,7 @@ class TaskController extends Controller
     {
         $task = $this->taskRepository->update($id, $request->validated());
 
-        broadcast(new TaskUpdated('updated'));
+        broadcast(new TaskUpdated($task->project, 'updated'));
 
         return response()->json(new TaskResource($task));
     }
@@ -92,9 +93,10 @@ class TaskController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
+        $task = $this->taskRepository->getById($id);
         $this->taskRepository->delete($id);
 
-        broadcast(new TaskUpdated('deleted'));
+        broadcast(new TaskUpdated($task->project, 'deleted'));
 
         return response()->json(null, 204);
     }

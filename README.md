@@ -1,66 +1,139 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Project Management Tool
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project is a full-featured project management tool built using Laravel and React. It includes functionality for project and task management, sorting, filtering, updating task statuses, and real-time notifications with Pusher integration.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Laravel Backend**: API for managing projects and tasks.
+- **React Frontend**: A user-friendly interface for listing, editing, and adding projects and tasks.
+- **Pusher Integration**: Real-time updates when projects are updated.
+- **Tailwind CSS**: Responsive and modern UI.
+- **Task and Project CRUD Operations**: Full Create, Read, Update, and Delete operations with task status management.
+- **Modal Forms**: Forms for adding and editing tasks/projects are handled through modals.
+- **Pagination and Sorting**: Data listing with pagination and sorting.
+- **Supervisor for Queue Handling**: Laravel queue jobs are managed using Supervisor.
+- **Task Management**: Assign tasks to projects, change task statuses (To Do, In Progress, Done), edit, and delete tasks.
+- **Real-time Updates**: Project updates are broadcasted via **Pusher** for real-time feedback.
+- **Spatie Query Builder**: Implemented sorting, filtering, and includable relationships using [Spatie Query Builder](https://github.com/spatie/laravel-query-builder). You can sort, filter, and include related resources in API requests.
+- **Role-Permission System**: Example role and permission management using [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission/v5/introduction) package. You can define and assign roles and permissions. An example `RolesAndPermissionsSeeder` is provided to manage roles like Admin, Project Manager, Task Manager, and Task Responsible.
+- **Docker Setup**: The project can be run locally or with Docker, which includes auto-installation and setup of all dependencies.
+- **Testing**: Comprehensive tests for core functionalities, ensuring robustness.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Installation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Requirements
+- PHP 8.2+
+- Composer
+- Node.js & npm
+- MySQL
 
-## Learning Laravel
+### Steps
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. **Clone the repository:**
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+    ```bash
+    git clone https://github.com/tcagkansokmen/project-management-tool.git
+    cd project-management-tool
+    ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. **Create the `.env` file:**
 
-## Laravel Sponsors
+   Copy the `.env.example` file and adjust the environment variables, such as database credentials:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+    ```bash
+    cp .env.example .env
+    ```
 
-### Premium Partners
+3. **Create a database:**
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+   Set up a MySQL database and update the `DB_DATABASE` value in your `.env` file.
 
-## Contributing
+4. **Install project dependencies:**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+   Run the following commands to install Composer and npm dependencies:
 
-## Code of Conduct
+    ```bash
+    composer install
+    npm install
+    ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+5. **Run database migrations:**
 
-## Security Vulnerabilities
+   Apply the necessary database migrations:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    ```bash
+    php artisan migrate
+    ```
 
-## License
+6. **Start the development server:**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+   Run the backend and frontend development servers:
+
+    ```bash
+    php artisan serve
+    npm run dev
+    ```
+
+7. **Start the queue worker:**
+
+   To handle background jobs, start the Laravel queue worker:
+
+    ```bash
+    php artisan queue:work
+    ```
+
+### Pusher Integration
+
+Real-time updates are powered by Pusher. Add your Pusher API credentials in the `.env` file:
+
+```bash
+PUSHER_APP_ID=your_pusher_app_id
+PUSHER_APP_KEY=your_pusher_app_key
+PUSHER_APP_SECRET=your_pusher_app_secret
+PUSHER_APP_CLUSTER=your_pusher_app_cluster
+```
+
+## Docker Setup
+
+Alternatively, you can run the project using Docker for a more streamlined development environment.
+
+### Docker Installation
+
+1. **Ensure Docker and Docker Compose are installed on your system.**
+
+2. **Build and start the Docker containers:**
+
+    ```bash
+    docker-compose up --build
+    ```
+
+3. **Run migrations and install dependencies inside the container:**
+
+   After the containers are up, run the following commands to install dependencies and migrate the database:
+
+    ```bash
+    docker exec -it my_app bash
+    composer install
+    npm install
+    php artisan migrate
+    ```
+
+4. **Access the project:**
+
+   Once the containers are running, the project will be available at:
+
+    ```
+    http://localhost:8000
+    ```
+
+### Queue Handling with Supervisor
+
+Queue workers are automatically managed by Supervisor inside the Docker container. This ensures that Laravel's queue jobs are processed in the background.
+
+To rebuild and start Docker containers (including Supervisor):
+
+```bash
+docker-compose up --build
+```
+
+Once Docker is running, Supervisor will automatically start processing Laravel queues in the background.

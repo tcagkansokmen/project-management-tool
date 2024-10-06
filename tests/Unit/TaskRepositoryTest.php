@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Enums\TaskStatus;
 use App\Models\Task;
 use App\Models\Project;
 use App\Repositories\TaskRepository;
@@ -28,7 +29,7 @@ class TaskRepositoryTest extends TestCase
             'project_id' => $project->id,
             'name' => 'Test Task',
             'description' => 'Test Task Description',
-            'status' => 1, // Todo
+            'status' => TaskStatus::TODO->value,
         ];
 
         $task = $this->taskRepository->create($data);
@@ -44,7 +45,7 @@ class TaskRepositoryTest extends TestCase
         $data = [
             'name' => 'Updated Task',
             'description' => 'Updated Task Description',
-            'status' => 2, // In-progress
+            'status' => TaskStatus::IN_PROGRESS->value,
         ];
 
         $updatedTask = $this->taskRepository->update($task->id, $data);

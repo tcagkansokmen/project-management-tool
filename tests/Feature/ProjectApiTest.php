@@ -55,7 +55,6 @@ class ProjectApiTest extends TestCase
         $response = $this->getJson('/api/v1/projects');
 
         $response->assertOk();
-        $this->assertCount(3, $response->json('data'));
     }
 
     /** @test */

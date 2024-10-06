@@ -1,20 +1,26 @@
-FROM php:8.1-fpm-alpine
+FROM php:8.2-fpm
 
-WORKDIR /var/www
-
-RUN apk add --no-cache git curl mysql-client libpng-dev ...
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    zip \
+    unzip \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    npm \
+    supervisor
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-COPY . /var/www
+WORKDIR /var/www/html
 
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+COPY . .
 
-RUN composer install --no-dev --optimize-autoloader
+RUN npm install
 
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-EXPOSE 9000
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

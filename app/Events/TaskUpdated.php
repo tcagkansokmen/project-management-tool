@@ -1,6 +1,7 @@
 <?php
 namespace App\Events;
 
+use App\Models\Project;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -12,12 +13,14 @@ class TaskUpdated implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public string $action;
+    public Project $project;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($action)
+    public function __construct($project, $action)
     {
+        $this->project = $project;
         $this->action = $action;
     }
 
@@ -38,5 +41,15 @@ class TaskUpdated implements ShouldBroadcast
         return [
             'action' => $this->action,
         ];
+    }
+
+    /**
+     * The event's broadcast name.
+     *
+     * @return string
+     */
+    public function broadcastAs(): string
+    {
+        return 'task-updated.' . $this->project->id;
     }
 }

@@ -34,13 +34,13 @@ class ProjectController extends Controller
     public function index(): JsonResponse
     {
         $projects = QueryBuilder::for($this->projectRepository->getModel())
-            ->allowedIncludes(['tasks'])
+            ->allowedIncludes(['tasks', 'doneTasks'])
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 'name',
                 'description',
             ])
-            ->allowedSorts(['name', 'created_at'])
+            ->allowedSorts(['id', 'name', 'description', 'created_at'])
             ->paginate(10);
 
         return ProjectResource::collection($projects)->response();
@@ -54,7 +54,7 @@ class ProjectController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $project = $this->projectRepository->getById($id);
+        $project = $this->projectRepository->getById($id)->load(['tasks']);
 
         return response()->json(new ProjectResource($project));
     }
