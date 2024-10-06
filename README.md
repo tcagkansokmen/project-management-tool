@@ -2,6 +2,17 @@
 
 This project is a full-featured project management tool built using Laravel and React. It includes functionality for project and task management, sorting, filtering, updating task statuses, and real-time notifications with Pusher integration.
 
+This project implements a **Repository Pattern** for handling database interactions. The **Repository Pattern** is used to separate the logic that interacts with the data layer from the business logic, providing a cleaner, more maintainable codebase. By using repositories, we can easily swap out the data source (for example, switching from MySQL to another database) without affecting the rest of the application.
+
+### Why Repository Pattern?
+We chose the **Repository Pattern** over alternatives like the **Service Layer** or **Factory Pattern** for the following reasons:
+- **Separation of Concerns**: It provides a clear separation between the business logic and data access logic.
+- **Testability**: Since repository interfaces are easily mockable, it simplifies unit testing by allowing you to mock database interactions.
+- **Maintainability**: It centralizes data access in a single layer, making the application easier to maintain and extend.
+- **Flexibility**: It allows you to easily swap out or extend the data source without needing to rewrite business logic.
+
+While the **Service Layer Pattern** is useful for orchestrating multiple business rules or interacting with multiple repositories, in this case, the Repository Pattern suffices as our application primarily focuses on interactions with a single repository. The **Factory Pattern** is generally more useful for object creation logic, which isn't the primary focus here, as we are managing data rather than object instantiation.
+
 ## Features
 
 - **Laravel Backend**: API for managing projects and tasks.
