@@ -68,12 +68,13 @@ While the **Service Layer Pattern** is useful for orchestrating multiple busines
     npm install
     ```
 
-5. **Run database migrations:**
+5. **Run database migrations & seed:**
 
    Apply the necessary database migrations:
 
     ```bash
     php artisan migrate
+    php artisan db:seed
     ```
 
 6. **Start the development server:**
@@ -91,6 +92,15 @@ While the **Service Layer Pattern** is useful for orchestrating multiple busines
 
     ```bash
     php artisan queue:work
+    ```
+
+8. **Login**
+
+   You can login to the system with the following credentials:
+
+    ```bash
+    admin@example.com
+   password123
     ```
 
 ### Pusher Integration
